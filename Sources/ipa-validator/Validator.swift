@@ -38,14 +38,14 @@ struct IPAValidator: AsyncParsableCommand {
             Inspects Mach-O LC_ENCRYPTION_INFO load commands to determine encryption status.
 
             Exit codes:
-              0 - All files are encrypted
-              1 - One or more files are NOT encrypted
+              0 - All files are decrypted
+              1 - One or more files are still encrypted
               2 - Error(s) occurred
 
             Examples:
               ipa-validator MyApp.ipa
               ipa-validator *.ipa
-              ipa-validator --quiet *.ipa | grep 'not-encrypted'
+              ipa-validator --quiet *.ipa | grep 'encrypted'
             """,
         version: "0.1.0"
     )
@@ -74,10 +74,10 @@ struct IPAValidator: AsyncParsableCommand {
         let results = try await processIPAs(tempDir: sharedTempDir)
 
         let hadErrors = !results.allSatisfy { $0.error == nil }
-        let anyNotEncrypted = results.contains { $0.encrypted == false }
+        let anyStillEncrypted = results.contains { $0.encrypted == true }
 
         if hadErrors { throw ExitCode(2) }
-        if anyNotEncrypted { throw ExitCode(1) }
+        if anyStillEncrypted { throw ExitCode(1) }
     }
 
     private func setupSignalHandlers() {
@@ -180,7 +180,7 @@ struct IPAValidator: AsyncParsableCommand {
             if result.error != nil {
                 print("\(result.path)\terror")
             } else if let encrypted = result.encrypted {
-                print("\(result.path)\t\(encrypted ? "encrypted" : "not-encrypted")")
+                print("\(result.path)\t\(encrypted ? "encrypted" : "decrypted")")
             }
             return
         }
@@ -194,15 +194,15 @@ struct IPAValidator: AsyncParsableCommand {
 
             if isTTY {
                 if encrypted {
-                    icon = "\(green)\(bold)✓\(reset)"
-                    status = "\(green)encrypted\(reset)"
-                } else {
                     icon = "\(red)\(bold)✗\(reset)"
-                    status = "\(red)not encrypted\(reset)"
+                    status = "\(red)encrypted\(reset)"
+                } else {
+                    icon = "\(green)\(bold)✓\(reset)"
+                    status = "\(green)decrypted\(reset)"
                 }
             } else {
-                icon = encrypted ? "✓" : "✗"
-                status = encrypted ? "encrypted" : "not encrypted"
+                icon = encrypted ? "✗" : "✓"
+                status = encrypted ? "encrypted" : "decrypted"
             }
 
             print("\(icon) \(result.filename) (\(status))")
