@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:ipa-validator}",
+            "name": "Debug ipa-validator",
+            "program": "${workspaceFolder:ipa-validator}/.build/debug/ipa-validator",
+            "preLaunchTask": "swift: Build Debug ipa-validator"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:ipa-validator}",
+            "name": "Release ipa-validator",
+            "program": "${workspaceFolder:ipa-validator}/.build/release/ipa-validator",
+            "preLaunchTask": "swift: Build Release ipa-validator"
+        }
+    ]
+}
