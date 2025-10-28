@@ -6,6 +6,7 @@ Give it an .ipa file, it tells you if it's decrypted or not.
 ```
 shg@shg-mbp Debug % ./ipa-validator /Users/shg/Downloads/ipa/ios\ 6/iPhoto-v1.1.1--iOS6.0-\(Clutch-1.4.6\)\ \(1\).ipa 
 ✗ iPhoto-v1.1.1--iOS6.0-(Clutch-1.4.6) (1).ipa (not encrypted)
+
 shg@shg-mbp Debug % ./ipa-validator /Users/shg/Downloads/ipa/ios\ 4/*.ipa                                            
 ✓ Flood-It! 2.ipa (encrypted)
 ✓ Flood-It!.ipa (encrypted)
